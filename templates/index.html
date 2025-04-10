@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gemini API Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+        <h1>Gemini API Test</h1>
+        <textarea id="prompt" rows="4" style="width: 100%; margin-bottom: 10px;"
+            placeholder="Enter your prompt here..."></textarea>
+        <br>
+        <button onclick="generateText()">Generate</button>
+        <div id="result" style="margin-top: 20px; white-space: pre-wrap;"></div>
+    </div>
+
+    <script>
+        function generateText() {
+            const prompt = document.getElementById('prompt').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = 'Generating...';
+            
+            fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ prompt: prompt })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    resultDiv.innerHTML = data.text;
+                } else {
+                    resultDiv.innerHTML = 'Error: ' + data.error;
+                }
+            })
+            .catch(error => {
+                resultDiv.innerHTML = 'Error: ' + error.message;
+            });
+        }
+    </script>
+</body>
+</html>
